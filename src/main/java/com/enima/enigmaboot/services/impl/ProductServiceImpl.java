@@ -1,7 +1,9 @@
 package com.enima.enigmaboot.services.impl;
 
+import com.enima.enigmaboot.constant.ResponseMessage;
 import com.enima.enigmaboot.dto.ProductSearchDTO;
 import com.enima.enigmaboot.entities.Products;
+import com.enima.enigmaboot.exception.DataNotFoundException;
 import com.enima.enigmaboot.repos.ProductRepos;
 import com.enima.enigmaboot.services.CustomerService;
 import com.enima.enigmaboot.services.ProductService;
@@ -26,6 +28,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Products getProductById(String id) {
+        if(!(productRepos.existsById(id))){
+            String message = String.format(ResponseMessage.NOT_FOUND_MESSAGE, "product", id);
+            throw new DataNotFoundException(message);
+        }
         return productRepos.findById(id).get();
     }
 
@@ -36,7 +42,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteProduct(String id) {
-        productRepos.deleteById(id);
+        Products products = getProductById(id);
+        products.setDelete(true);
+        productRepos.save(products);
+//        productRepos.deleteById(id);
     }
 
     @Override

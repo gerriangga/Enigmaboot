@@ -1,10 +1,13 @@
 package com.enima.enigmaboot.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="mst_customer")
@@ -13,14 +16,18 @@ public class Customers {
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "customer_id")
-    public String id;
-    public String firstName;
-    public String lastName;
+    private String id;
+    private String firstName;
+    private String lastName;
     @JsonFormat(pattern = "yyyy-MM-dd")
-    public Date dateOfBirth;
-    public String userName;
-    public String password;
-    public Integer status;
+    private Date dateOfBirth;
+    private String userName;
+    private String password;
+    private Integer status;
+
+    @OneToMany(mappedBy = "customers", cascade = CascadeType.PERSIST) //cascade -> cant delete a data that related to foreign key
+    @JsonIgnoreProperties("customers")
+    private List<Purchases> purchases = new ArrayList<>();
 
     public Customers() {
     }
@@ -89,5 +96,13 @@ public class Customers {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public List<Purchases> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchases> purchases) {
+        this.purchases = purchases;
     }
 }

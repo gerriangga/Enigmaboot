@@ -17,6 +17,7 @@ public class Products {
     @Column(name = "product_price")
     private Integer productPrice;
     private Integer stock;
+    private Boolean isDelete=false;
 
     public Products() {
     }
@@ -58,5 +59,13 @@ public class Products {
 
     public void setStock(Integer stock) {
         this.stock = stock;
+    }
+
+    public Boolean getDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(Boolean delete) {
+        isDelete = delete;
     }
 }
