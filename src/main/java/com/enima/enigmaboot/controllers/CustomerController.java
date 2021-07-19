@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(ApiUrlConstant.CUSTOMER)
 public class CustomerController {
@@ -57,8 +59,8 @@ public class CustomerController {
 //    }
 
     @PutMapping
-    public void updateCustomer(@RequestBody Customers customers){
-        customerService.saveCustomer(customers);
+    public Customers updateCustomer(@RequestBody Customers customers){
+        return customerService.saveCustomer(customers);
     }
 
     @DeleteMapping("/{customerId}")
@@ -77,4 +79,21 @@ public class CustomerController {
         Page<Customers> customersPage = customerService.getCustomerPerPage(pageable, customerSearchDTO);
         return new PageResponseWrapper<Customers>(customersPage);
     }
+
+    @GetMapping("/active")
+    public List<Customers> getActiveCustomer(){
+        return customerService.getActiveCustomer();
+    }
+
+    @GetMapping("/nonactive")
+    public List<Customers> getNonActiveCustomer(@RequestParam(name ="firstName")String firstName,
+                                                @RequestParam(name="lastName") String lastName){
+        return customerService.getNonActiveCustomer(firstName, lastName);
+    }
+
+    @PutMapping("/updatestatus")
+    public void updateStatusCustomer(@RequestParam(name = "id") String id){
+        customerService.updateStatusCustomer(id);
+    }
+
 }

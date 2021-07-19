@@ -1,5 +1,6 @@
 package com.enima.enigmaboot.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.GenericGenerator;
@@ -20,9 +21,10 @@ public class Purchases {
     private String id;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date purchaseDate;
+    @JsonIgnoreProperties("purchases")
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonIgnoreProperties("purchases")
+    @JsonBackReference
     private Customers customers;
 
     @OneToMany(mappedBy = "purchases")

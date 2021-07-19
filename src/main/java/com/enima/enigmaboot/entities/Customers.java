@@ -2,6 +2,7 @@ package com.enima.enigmaboot.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -25,8 +26,9 @@ public class Customers {
     private String password;
     private Integer status;
 
+    //    @JsonIgnoreProperties("customers")
     @OneToMany(mappedBy = "customers", cascade = CascadeType.PERSIST) //cascade -> cant delete a data that related to foreign key
-    @JsonIgnoreProperties("customers")
+    @JsonManagedReference
     private List<Purchases> purchases = new ArrayList<>();
 
     public Customers() {

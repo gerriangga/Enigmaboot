@@ -1,7 +1,9 @@
 package com.enima.enigmaboot.services.impl;
 
+import com.enima.enigmaboot.constant.ResponseMessage;
 import com.enima.enigmaboot.dto.CustomerSearchDTO;
 import com.enima.enigmaboot.entities.Customers;
+import com.enima.enigmaboot.exception.DataNotFoundException;
 import com.enima.enigmaboot.repos.CustomerRepos;
 import com.enima.enigmaboot.services.CustomerService;
 import com.enima.enigmaboot.specification.CustomerSpecification;
@@ -53,4 +55,25 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepos.findCustomerByFirstNameContainingIgnoreCaseAndLastNameContainingIgnoreCase(firstName , lastName);
     }
 
+    @Override
+    public List<Customers> getActiveCustomer() {
+        return customerRepos.findActiveCustomers();
+    }
+
+    @Override
+    public List<Customers> getNonActiveCustomer(String firstName, String lastName) {
+        return customerRepos.nonActiveCustomer(firstName, lastName);
+    }
+
+    @Override
+    public void updateStatusCustomer(String id){
+        customerRepos.updateCustomerStatus(id);
+    }
+
+    private void validatePresent(String id){
+        if (!customerRepos.findById(id).isPresent()){
+            String message = String.format(ResponseMessage.NOT_FOUND_MESSAGE, "Customer", id);
+            throw new DataNotFoundException(message);
+        }
+    }
 }

@@ -10,6 +10,7 @@ import com.enima.enigmaboot.services.ProductService;
 import com.enima.enigmaboot.services.PurchaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
@@ -23,19 +24,20 @@ public class PurchaseServiceImpl implements PurchaseService {
     ProductService productService;
 
     @Override
+    @Transactional
     public Purchases transaction(Purchases purchase) {
-        Purchases purchases = purchaseRepos.save(purchase);
+        Purchases purchaseSaved = purchaseRepos.save(purchase);
 
         for (PurchaseDetail purchaseDetail : purchase.getPurchaseDetails()) {
-            purchaseDetail.setPurchases(purchases);
+            purchaseDetail.setPurchases(purchaseSaved);
             Products products = productService.getProductById(purchaseDetail.getProducts().getId());
 
-            purchaseDetail.setPriceSell(Double.valueOf(products.getProductPrice()));
+            purchaseDetail.setPriceSell(Double.valueOf(products.getProductPrice()* purchaseDetail.getQuantity()));
             Integer productStock = products.getStock() - purchaseDetail.getQuantity();
             products.setStock(productStock);
             purchaseDetailService.savePurchaseDetail(purchaseDetail);
         }
-        return purchases;
+        return purchaseSaved;
     }
 
     @Override

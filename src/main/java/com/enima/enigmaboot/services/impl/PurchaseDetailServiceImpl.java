@@ -13,8 +13,6 @@ public class PurchaseDetailServiceImpl implements PurchaseDetailService {
 
     @Override
     public PurchaseDetail savePurchaseDetail(PurchaseDetail purchaseDetail) {
-
-
         return purchaseDetailRepos.save(purchaseDetail);
     }
 }
